@@ -2,7 +2,7 @@
 name = "vllm-huggingface"
 version = "0.1.0"
 description = ""
-authors = ["Yushi Homma <hommayushi3@gmail.com>"]
+authors = ["Yushi Homma <hommayushi3@gmail.com>", "Moritz Laurer <moritz@huggingface.co>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
