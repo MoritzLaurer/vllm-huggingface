@@ -1,17 +1,26 @@
 from huggingface_hub import create_inference_endpoint
 import os
 from dotenv import load_dotenv
+import re
 
 
-VLLM_HF_IMAGE_URL = "hommayushi3/vllm-huggingface"
+VLLM_HF_IMAGE_URL = "moritzlaurer/vllm-huggingface"
+MODEL_ID = "OpenGVLab/InternVL2-2B"  #"microsoft/Phi-3.5-vision-instruct"
+
+def create_compatible_endpoint_name(model_id: str) -> str:
+    part = model_id.split('/')[-1]
+    part_lower = part.lower()
+    cleaned = re.sub(r'[^a-z0-9\-]', '-', part_lower)
+    trimmed = cleaned[:32]
+    return trimmed
 
 
 if __name__ == "__main__":
     load_dotenv()
-    repo_id = "microsoft/Phi-3.5-vision-instruct"
+    repo_id = MODEL_ID
     env_vars = {
         "DISABLE_SLIDING_WINDOW": "true",
-        "MAX_MODEL_LEN": "2048",
+        "MAX_MODEL_LEN": "4096",
         "MAX_NUM_BATCHED_TOKENS": "8192",
         "DTYPE": "bfloat16",
         "GPU_MEMORY_UTILIZATION": "0.98",
@@ -22,7 +31,7 @@ if __name__ == "__main__":
     }
 
     endpoint = create_inference_endpoint(
-        name=os.path.basename(repo_id).lower(),
+        name=create_compatible_endpoint_name(MODEL_ID),
         repository=repo_id,
         framework="pytorch",
         task="custom",
@@ -32,6 +41,9 @@ if __name__ == "__main__":
         type="protected",
         instance_size="x1",
         instance_type="nvidia-l4",
+        min_replica=0,
+        max_replica=1,
+        scale_to_zero_timeout=30,
         custom_image={
             "health_route": "/health",
             "env": env_vars,
