@@ -5,7 +5,7 @@ import re
 
 
 VLLM_HF_IMAGE_URL = "moritzlaurer/vllm-huggingface"
-MODEL_ID = "OpenGVLab/InternVL2-2B"  #"microsoft/Phi-3.5-vision-instruct"
+MODEL_ID = "Qwen/Qwen2-VL-2B-Instruct"  #"OpenGVLab/InternVL2-4B" #"microsoft/Phi-3.5-vision-instruct"
 
 def create_compatible_endpoint_name(model_id: str) -> str:
     part = model_id.split('/')[-1]
@@ -19,7 +19,7 @@ if __name__ == "__main__":
     load_dotenv()
     repo_id = MODEL_ID
     env_vars = {
-        "DISABLE_SLIDING_WINDOW": "true",
+        "DISABLE_SLIDING_WINDOW": "false",
         "MAX_MODEL_LEN": "4096",
         "MAX_NUM_BATCHED_TOKENS": "8192",
         "DTYPE": "bfloat16",

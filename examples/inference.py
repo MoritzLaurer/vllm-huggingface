@@ -17,7 +17,7 @@ generation_parameters = {
     "stream": False,
 }
 
-def predict(messages):
+def chat_completions(messages):
     return client.chat.completions.create(
         model="/repository", # needs to be /repository since there are the model artifacts stored
         messages=messages,
@@ -36,18 +36,18 @@ if __name__ == "__main__":
                 "type": "image_url",
                 "image_url": {
                     "url": "https://unsplash.com/photos/ZVw3HmHRhv0/download?ixid=M3wxMjA3fDB8MXxhbGx8NHx8fHx8fDJ8fDE3MjQ1NjAzNjl8&force=true&w=1920"
+                    #"url": "https://images.unsplash.com/photo-1529778873920-4da4926a72c2?q=80&w=2853&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 }
             },
             {
                 "type": "text",
-                "text": "What type of animal is in the image above? What color does it have?"
-                #"text": "\nPlease provide the bounding box coordinate of the region this sentence describes: <ref>the bird</ref>"  #"What is in the above image? Explain in detail."
+                "text": "Please describe the image in detail."
             }
         ]},
     ]
-
+    
+    
     start = time()
-    response = predict(messages)
+    response = chat_completions(messages)
     print(f"LLM output: {response}")
     print(f"Time taken: {time() - start:.2f}s")
-
