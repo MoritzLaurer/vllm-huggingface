@@ -5,7 +5,7 @@ MAX_MODEL_LEN=${MAX_MODEL_LEN:-1}
 MAX_NUM_BATCHED_TOKENS=${MAX_NUM_BATCHED_TOKENS:-1}
 ENABLE_CHUNKED_PREFILL=${ENABLE_CHUNKED_PREFILL:-false}
 ENABLE_PREFIX_CACHING=${ENABLE_PREFIX_CACHING:-false}
-DISABLE_SLIDING_WINDOW=${DISABLE_SLIDING_WINDOW:-false}
+#DISABLE_SLIDING_WINDOW=${DISABLE_SLIDING_WINDOW:-false}
 QUANTIZATION=${QUANTIZATION:-}
 DTYPE=${DTYPE:-"auto"}
 TRUST_REMOTE_CODE=${TRUST_REMOTE_CODE:-false}
@@ -35,9 +35,9 @@ fi
 if [ "$ENABLE_CHUNKED_PREFILL" = true ]; then
     CMD="$CMD --enable-chunked-prefill"
 fi
-if [ "$DISABLE_SLIDING_WINDOW" = true ]; then
-    CMD="$CMD --disable-sliding-window"
-fi
+#if [ "$DISABLE_SLIDING_WINDOW" = true ]; then
+#    CMD="$CMD --disable-sliding-window"
+#fi
 if [ -n "$QUANTIZATION" ]; then
     CMD="$CMD --quantization $QUANTIZATION"
 fi
