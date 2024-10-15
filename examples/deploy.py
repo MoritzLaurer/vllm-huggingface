@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import re
 
 
-VLLM_HF_IMAGE_URL = "moritzlaurer/vllm-huggingface"
+VLLM_HF_IMAGE_URL = "moritzlaurer/vllm-huggingface:latest"
 MODEL_ID = "Qwen/Qwen2-VL-2B-Instruct"  #"OpenGVLab/InternVL2-4B" #"microsoft/Phi-3.5-vision-instruct"
 
 def create_compatible_endpoint_name(model_id: str) -> str:
@@ -24,8 +24,8 @@ if __name__ == "__main__":
         "MAX_NUM_BATCHED_TOKENS": "8192",
         "DTYPE": "bfloat16",
         "GPU_MEMORY_UTILIZATION": "0.98",
-        "QUANTIZATION": "fp8",
-        "USE_V2_BLOCK_MANAGER": "true",
+        #"QUANTIZATION": "fp8",
+        #"USE_V2_BLOCK_MANAGER": "true",
         "VLLM_ATTENTION_BACKEND": "FLASH_ATTN",
         "TRUST_REMOTE_CODE": "true",
     }
@@ -40,7 +40,7 @@ if __name__ == "__main__":
         region="us-east-1",
         type="protected",
         instance_size="x1",
-        instance_type="nvidia-l4",
+        instance_type="nvidia-a10g",
         min_replica=0,
         max_replica=1,
         scale_to_zero_timeout=30,
