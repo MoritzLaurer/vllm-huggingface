@@ -14,17 +14,17 @@ jobs:
       with:
         fetch-depth: 0  # Fetch all history for all tags and branches
 
-    - name: Get the version
-      id: get_version
-      run: |
-        # Get the latest tag
-        git fetch --tags
-        latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
-        
-        # Increment the patch version
-        version=$(echo $latest_tag | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
-        echo "New version: $version"
-        echo "VERSION=$version" >> $GITHUB_OUTPUT
+    - name: Get the latest git tag
+      uses: actions-ecosystem/action-get-latest-tag@v1
+      id: get-latest-tag
+
+    - name: Bump version
+      uses: actions-ecosystem/action-bump-semver@v1
+      id: bump-semver
+      with:
+        current_version: ${{ steps.get-latest-tag.outputs.tag }}
+        level: patch
+        strip_v: true  # Remove leading 'v' from version number
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
@@ -35,26 +35,17 @@ jobs:
         username: ${{ secrets.DOCKER_USER }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build and push
+    - name: Build and push Docker image
       uses: docker/build-push-action@v5
       with:
         context: .
         push: true
         tags: |
           ${{ secrets.DOCKER_USER }}/vllm-huggingface:latest
-          ${{ secrets.DOCKER_USER }}/vllm-huggingface:${{ steps.get_version.outputs.VERSION }}
+          ${{ secrets.DOCKER_USER }}/vllm-huggingface:${{ steps.bump-semver.outputs.new_version }}
 
-    - name: Update latest git tag
-      uses: actions-ecosystem/action-get-latest-tag@v1
-      id: get-latest-tag
-
-    - uses: actions-ecosystem/action-bump-semver@v1
-      id: bump-semver
+    - name: Push new git tag
+      uses: actions-ecosystem/action-push-tag@v1
       with:
-        current_version: ${{ steps.get-latest-tag.outputs.tag }}
-        level: patch
-
-    - uses: actions-ecosystem/action-push-tag@v1
-      with:
-        tag: ${{ steps.bump-semver.outputs.new_version }}
-        message: '${{ steps.bump-semver.outputs.new_version }}'
+        tag: v${{ steps.bump-semver.outputs.new_version }}
+        message: 'v${{ steps.bump-semver.outputs.new_version }}'
