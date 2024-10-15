@@ -32,7 +32,7 @@ ENV PATH=/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/
 RUN rm -rf /var/lib/apt/lists/*
 
 # Verify that nvcc is available (optional)
-RUN nvcc --version
+#RUN nvcc --version
 
 # Install flash-attn using pip
 RUN pip install flash-attn --no-build-isolation
