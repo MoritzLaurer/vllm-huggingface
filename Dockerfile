@@ -33,7 +33,7 @@ RUN ln -s $CUDA_HOME /usr/local/cuda
 
 # Verify that nvcc is available (additional checks)
 RUN find / -name nvcc
-RUN python -c "from torch.utils.cpp_extension import CUDA_HOME; print(CUDA_HOME)"
+RUN python3 -c "from torch.utils.cpp_extension import CUDA_HOME; print(CUDA_HOME)"
 RUN which nvcc
 RUN nvcc --version
 
