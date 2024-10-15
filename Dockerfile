@@ -6,6 +6,9 @@ ENV DO_NOT_TRACK=1
 
 COPY --chmod=775 endpoints-entrypoint.sh entrypoint.sh
 
+# install flash-attn because not part of standard container (?)
+RUN pip install flash-attn --no-build-isolation
+
 # install latest vllm version for most recent models and fixes
 # https://docs.vllm.ai/en/latest/getting_started/installation.html#install-the-latest-code
 #RUN pip uninstall -y vllm && \
