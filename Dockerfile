@@ -19,16 +19,20 @@ RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86
 # Update package lists after adding CUDA repository
 RUN apt-get update
 
-# Install CUDA toolkit matching your CUDA version (CUDA 12.1)
+# Install CUDA toolkit (CUDA 12.1)
 RUN apt-get install -y --no-install-recommends cuda-toolkit-12-1
 
-# Set CUDA_HOME to /usr since CUDA 12.1 installs to /usr
-ENV CUDA_HOME=/usr
+# Set CUDA_HOME to the actual installation directory
+ENV CUDA_HOME=/usr/local/cuda-12.1
 
 # Update PATH environment variable
 ENV PATH=$CUDA_HOME/bin:$PATH
 
+# Create a symlink to /usr/local/cuda (some software expects CUDA here)
+RUN ln -s $CUDA_HOME /usr/local/cuda
+
 # Verify that nvcc is available (additional checks)
+RUN find / -name nvcc
 RUN which nvcc
 RUN nvcc --version
 
@@ -38,7 +42,7 @@ RUN rm -rf /var/lib/apt/lists/*
 # Install flash-attn using pip
 RUN pip install flash-attn --no-build-isolation
 
-# Check CUDA version
+# Check CUDA version in PyTorch
 RUN python -c "import torch; print(torch.version.cuda)"
 
 ENTRYPOINT ["/bin/bash", "entrypoint.sh"]
