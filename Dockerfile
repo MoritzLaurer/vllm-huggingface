@@ -1,4 +1,4 @@
-FROM vllm/vllm-openai:v0.6.2
+FROM vllm/vllm-openai:v0.6.3
 
 #ENV VLLM_COMMIT=7193774b1ff8603ad5bf4598e5efba0d9a39b436
 #ENV VLLM_VERSION=0.6.2
