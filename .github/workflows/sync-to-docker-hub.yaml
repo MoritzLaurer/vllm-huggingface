@@ -23,8 +23,13 @@ jobs:
       shell: bash
       run: |
         version="${{ steps.get-latest-tag.outputs.tag }}"
-        version="${version#v}"  # Remove leading 'v' if present
-        echo "version=$version" >> $GITHUB_OUTPUT
+        if [ -z "$version" ]; then
+          echo "No existing tags found. Setting version to 0.0.0"
+          version="0.0.0"
+        else
+          version="${version#v}"  # Remove leading 'v' if present
+        fi
+        echo "version=$version" >> $GITHUB_OUTPUT_PATHS
 
     - name: Bump version
       uses: actions-ecosystem/action-bump-semver@v1
