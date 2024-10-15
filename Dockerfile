@@ -26,7 +26,7 @@ RUN apt-get install -y --no-install-recommends cuda-toolkit-12-1
 RUN ln -s /usr/local/cuda-12.1 /usr/local/cuda
 
 # Update PATH environment variable
-ENV PATH=/usr/local/cuda/bin:${PATH}
+ENV PATH=/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 # Clean up APT cache to reduce image size
 RUN rm -rf /var/lib/apt/lists/*
