@@ -1,19 +1,32 @@
 FROM vllm/vllm-openai:v0.6.3
 
-#ENV VLLM_COMMIT=7193774b1ff8603ad5bf4598e5efba0d9a39b436
-#ENV VLLM_VERSION=0.6.2
 ENV DO_NOT_TRACK=1
 
 COPY --chmod=775 endpoints-entrypoint.sh entrypoint.sh
 
-# install flash-attn because not part of standard container (?)
-#RUN pip install flash-attn --no-build-isolation
+# Install dependencies for adding CUDA repository
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    wget \
+    gnupg2 \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
-# install latest vllm version for most recent models and fixes
-# https://docs.vllm.ai/en/latest/getting_started/installation.html#install-the-latest-code
-RUN pip uninstall -y vllm && \
-    pip install https://vllm-wheels.s3.us-west-2.amazonaws.com/nightly/vllm-1.0.0.dev-cp38-abi3-manylinux1_x86_64.whl
-    #pip install https://vllm-wheels.s3.us-west-2.amazonaws.com/${VLLM_COMMIT}/vllm-${VLLM_VERSION}-cp38-abi3-manylinux1_x86_64.whl
+# Add NVIDIA CUDA repository keyring
+RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb && \
+    dpkg -i cuda-keyring_1.1-1_all.deb && \
+    rm cuda-keyring_1.1-1_all.deb
+
+# Update package lists after adding CUDA repository
+RUN apt-get update
+
+# Install CUDA toolkit matching your CUDA version (CUDA 12.1)
+RUN apt-get install -y --no-install-recommends cuda-toolkit-12-1
+
+# Clean up APT cache to reduce image size
+RUN rm -rf /var/lib/apt/lists/*
+
+# Install flash-attn using pip
+RUN pip install flash-attn --no-build-isolation
 
 ENTRYPOINT ["/bin/bash", "entrypoint.sh"]
 CMD [""]
