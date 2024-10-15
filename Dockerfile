@@ -33,17 +33,18 @@ RUN ln -s $CUDA_HOME /usr/local/cuda
 
 # Verify that nvcc is available (additional checks)
 RUN find / -name nvcc
+RUN python -c "from torch.utils.cpp_extension import CUDA_HOME; print(CUDA_HOME)"
 RUN which nvcc
 RUN nvcc --version
+
+# Check CUDA version in PyTorch
+RUN python3 -c "import torch; print(torch.version.cuda)"
 
 # Clean up APT cache to reduce image size
 RUN rm -rf /var/lib/apt/lists/*
 
 # Install flash-attn using pip
 RUN pip install flash-attn --no-build-isolation
-
-# Check CUDA version in PyTorch
-RUN python -c "import torch; print(torch.version.cuda)"
 
 ENTRYPOINT ["/bin/bash", "entrypoint.sh"]
 CMD [""]
