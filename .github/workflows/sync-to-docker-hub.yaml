@@ -14,30 +14,19 @@ jobs:
       with:
         fetch-depth: 0  # Fetch all history for all tags and branches
 
-    - name: Get the latest git tag
-      uses: actions-ecosystem/action-get-latest-tag@v1
-      id: get-latest-tag
-
-    - name: Extract version number
-      id: extract_version
-      shell: bash
-      run: |
-        version="${{ steps.get-latest-tag.outputs.tag }}"
-        if [ -z "$version" ]; then
-          echo "No existing tags found. Setting version to 0.0.0"
-          version="0.0.0"
-        else
-          version="${version#v}"  # Remove leading 'v' if present
-        fi
-        echo "version=$version" >> $GITHUB_OUTPUT
-
-    - name: Bump version
-      uses: actions-ecosystem/action-bump-semver@v1
-      id: bump-semver
+    - name: Bump version and push tag
+      id: tag_version
+      uses: mathieudutour/github-tag-action@v6.0
       with:
-        current_version: ${{ steps.extract_version.outputs.version }}
-        level: patch
-        tag_prefix: v  # Use 'v' as the prefix for new tags
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        default_bump: patch
+        tag_prefix: 'v'  # Set to 'v' since your tags have 'v' prefix
+        create_annotated_tag: true
+
+    - name: Output New Version and Tag
+      run: |
+        echo "New Version: ${{ steps.tag_version.outputs.new_version }}"
+        echo "New Tag: ${{ steps.tag_version.outputs.new_tag }}"
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
@@ -55,10 +44,4 @@ jobs:
         push: true
         tags: |
           ${{ secrets.DOCKER_USER }}/vllm-huggingface:latest
-          ${{ secrets.DOCKER_USER }}/vllm-huggingface:${{ steps.bump-semver.outputs.new_version }}
-
-    - name: Push new git tag
-      uses: actions-ecosystem/action-push-tag@v1
-      with:
-        tag: ${{ steps.bump-semver.outputs.new_tag }}
-        message: '${{ steps.bump-semver.outputs.new_tag }}'
+          ${{ secrets.DOCKER_USER }}/vllm-huggingface:${{ steps.tag_version.outputs.new_version }}
