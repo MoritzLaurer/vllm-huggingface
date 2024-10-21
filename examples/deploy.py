@@ -26,7 +26,7 @@ if __name__ == "__main__":
         "GPU_MEMORY_UTILIZATION": "0.98",
         #"QUANTIZATION": "fp8",
         #"USE_V2_BLOCK_MANAGER": "true",
-        "VLLM_ATTENTION_BACKEND": "FLASH_ATTN",
+        "VLLM_ATTENTION_BACKEND": "FLASHINFER",
         "TRUST_REMOTE_CODE": "true",
     }
 
