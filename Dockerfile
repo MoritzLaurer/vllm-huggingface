@@ -32,5 +32,8 @@ RUN find / -name nvcc && \
 # Check CUDA and pytorch version to simplify debugging
 RUN python3 -c "import torch; print(torch.version.cuda); print(torch.__version__)"
 
+# Install flash-attn using pip
+RUN pip install flash-attn --no-build-isolation
+
 ENTRYPOINT ["/bin/bash", "entrypoint.sh"]
 CMD [""]
