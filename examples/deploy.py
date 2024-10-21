@@ -21,7 +21,7 @@ if __name__ == "__main__":
     env_vars = {
         "DISABLE_SLIDING_WINDOW": "false",
         "MAX_MODEL_LEN": "4096",
-        "MAX_NUM_BATCHED_TOKENS": "8192",
+        #"MAX_NUM_BATCHED_TOKENS": "8192",
         "DTYPE": "bfloat16",
         "GPU_MEMORY_UTILIZATION": "0.98",
         #"QUANTIZATION": "fp8",
