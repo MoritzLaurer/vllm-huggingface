@@ -7,7 +7,7 @@ load_dotenv()
 ENDPOINT_URL = os.getenv("HF_ENDPOINT_URL") + "/v1/" # if endpoint object is not available check the UI 
 API_KEY = os.getenv("HF_TOKEN")
 
-# initialize the client but point it to TGI
+# initialize the client but point it to TGI / vLLM endpoint
 client = OpenAI(base_url=ENDPOINT_URL, api_key=API_KEY)
 
 generation_parameters = {
